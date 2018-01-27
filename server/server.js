@@ -18,23 +18,18 @@ const salt = bcrypt.genSaltSync(saltRounds);
 
 const app = express();
 
-app.listen(process.env.PORT || 3000);
-
-app.use('/public', express.static('client/public'));
-app.use('/react', express.static('node_modules/react/dist'));
-app.use('/react-dom', express.static('node_modules/react-dom/dist'));
-app.use('/jquery', express.static('node_modules/jquery/dist'));
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-
-console.log('server is running');
-
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
   Passport-Facebook Setup
 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-const initializedPassport = passport.initialize();
-const passportSession = passport.session();
+passport.use(new Strategy({
+  clientID: '184819325602122',
+  clientSecret: '712d04a540b9fad84f116591130aea58',
+  callbackURL: 'http://localhost:3000/login/facebook/return'
+},
+(accessToken, refreshToken, profile, cb) => {
+  return cb(null, profile);
+}));
 
 passport.serializeUser((user, cb) => {
   cb(null, user);
@@ -44,14 +39,26 @@ passport.deserializeUser((obj, cb) => {
   cb(null, obj);
 });
 
-passport.use(new Strategy({
-    clientID: process.env.CLIENT_ID,
-    clientSecret: process.env.CLIENT_SECRET,
-    callbackURL: 'http://localhost:3000/login/facebook/return'
-  },
-  (accessToken, refreshToken, profile, cb) => {
-    return cb(null, profile);
-  }));
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+  Express App Setup
+* * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+app.use('/public', express.static('client/public'));
+app.use('/react', express.static('node_modules/react/dist'));
+app.use('/react-dom', express.static('node_modules/react-dom/dist'));
+app.use('/jquery', express.static('node_modules/jquery/dist'));
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(require('cookie-parser')());
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.listen(process.env.PORT || 3000);
+
+console.log('server is running');
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
   API Routes
@@ -62,6 +69,13 @@ app.get('/', (req,res)=> {
 });
 app.get('/workout', getWorkout);
 app.get('/history', getHistory);
+app.get('/login/facebook',
+  passport.authenticate('facebook'));
+app.get('/login/facebook/return', 
+  passport.authenticate('facebook', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/');
+  });
 
 app.post('/addWorkout', addWorkout);
 app.post('/login', checkLogin);

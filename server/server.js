@@ -2,6 +2,7 @@ const express = require('express')
 const bodyParser = require('body-parser');
 const path = require('path');
 const expressSession = require('express-session');
+require('dotenv').config();
 
 const passport = require('passport');
 const Strategy = require('passport-facebook').Strategy;
@@ -23,8 +24,8 @@ const app = express();
 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 passport.use(new Strategy({
-  clientID: '184819325602122',
-  clientSecret: '712d04a540b9fad84f116591130aea58',
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
   callbackURL: 'http://localhost:3000/login/facebook/return'
 },
 (accessToken, refreshToken, profile, cb) => {

@@ -2,7 +2,6 @@
 
 .DS_Store
 
-
 /server/dbInfo.js
 /server/seedDb.js
 
@@ -12,3 +11,4 @@
 
 /.floo
 
+.env

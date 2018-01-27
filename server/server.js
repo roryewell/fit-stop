@@ -2,6 +2,9 @@ var express = require('express')
 var bodyParser = require('body-parser');
 var path = require('path');
 
+const passport = require('passport');
+const Strategy = require('passport-facebook').Strategy;
+
 var db = require('./db').mongoose;
 var Exercise = require('./db').exerciseModel;
 var User = require('./db').userModel;
@@ -176,5 +179,3 @@ function addSignup(req, res) {
     }
   });
 }
-
-

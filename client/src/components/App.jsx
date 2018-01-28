@@ -192,6 +192,8 @@ class App extends React.Component {
     });
   }
 
+  facebookSignup
+
   logOut() {
     this.setState({loggedIn: false});
     this.setState({username: null});

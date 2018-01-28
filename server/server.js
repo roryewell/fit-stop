@@ -75,6 +75,7 @@ app.get('/login/facebook',
 app.get('/login/facebook/return', 
   passport.authenticate('facebook', { failureRedirect: '/' }),
   (req, res) => {
+    console.log(req);
     res.redirect('/');
   });
 

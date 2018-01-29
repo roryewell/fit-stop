@@ -192,7 +192,15 @@ class App extends React.Component {
     });
   }
 
-  facebookSignup
+  facebookSignup(event) {
+    axios.get('/login/facebook')
+      .then((result) => {
+        console.log('woo', result);
+      })
+      .catch((err) => {
+        console.log('Facebook authentication error:', err);
+      });
+  }
 
   logOut() {
     this.setState({loggedIn: false});

@@ -29,6 +29,7 @@ passport.use(new Strategy({
   callbackURL: 'http://localhost:3000/login/facebook/return'
 },
 (accessToken, refreshToken, profile, cb) => {
+  console.log(accessToken, refreshToken, profile, cb);
   return cb(null, profile);
 }));
 
@@ -75,7 +76,6 @@ app.get('/login/facebook',
 app.get('/login/facebook/return', 
   passport.authenticate('facebook', { failureRedirect: '/' }),
   (req, res) => {
-    console.log(req);
     res.redirect('/');
   });
 

@@ -50,4 +50,3 @@ var User = mongoose.model('User', userSchema);
 module.exports.exerciseModel = Exercise;
 module.exports.userModel = User;
 module.exports.mongoose = mongoose;
-

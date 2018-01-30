@@ -5,6 +5,7 @@
     <link rel="stylesheet" href="public/css/style.css">
     <script>if (typeof module === 'object') {window.module = module; module = undefined;}</script>
 
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script src="react/react.js"></script>
     <script src="react-dom/react-dom.js"></script>
     <script src="jquery/jquery.js"></script>
@@ -36,23 +37,20 @@
       ipcRenderer.on('workout:start', () => {
         document.querySelector('.startButton img').click();
       });
-
+      
       ipcRenderer.on('workout:end', () => {
         // TODO: This isn't a very safe way to execute the "End" function. Need to be more specific
         // in next revision:
         document.querySelector('.blackButton').click();
       });
-
+      
       ipcRenderer.on('user:log-in', () => {
         // TODO: Need a way to specify "Log In" button.
       });
-
+      
       ipcRenderer.on('user:log-out', () => {
         // TODO: Need a way to specify "Log out" functionality.
       });
-
     </script>
-
   </body>
 </html>
-

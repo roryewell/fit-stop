@@ -1,20 +1,49 @@
-var express = require('express')
-var bodyParser = require('body-parser');
-var path = require('path');
+const express = require('express')
+const bodyParser = require('body-parser');
+const path = require('path');
+const expressSession = require('express-session');
+require('dotenv').config();
 
-var db = require('./db').mongoose;
-var Exercise = require('./db').exerciseModel;
-var User = require('./db').userModel;
-var ObjectID = require('mongodb').ObjectID;
+const passport = require('passport');
+const Strategy = require('passport-facebook').Strategy;
+
+const db = require('./db').mongoose;
+const Exercise = require('./db').exerciseModel;
+const User = require('./db').userModel;
+const ObjectID = require('mongodb').ObjectID;
 
 
-var bcrypt = require('bcrypt');
+const bcrypt = require('bcrypt');
 const saltRounds = 10;
-var salt = bcrypt.genSaltSync(saltRounds);
+const salt = bcrypt.genSaltSync(saltRounds);
 
-var app = express();
+const app = express();
 
-app.listen(process.env.PORT || 3000);
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+  Passport-Facebook Setup
+* * * * * * * * * * * * * * * * * * * * * * * * * * */
+
+passport.use(new Strategy({
+  clientID: process.env.CLIENT_ID,
+  clientSecret: process.env.CLIENT_SECRET,
+  callbackURL: 'http://localhost:3000/login/facebook/return'
+},
+(accessToken, refreshToken, profile, cb) => {
+  console.log(accessToken, refreshToken, profile, cb);
+  return cb(null, profile);
+}));
+
+passport.serializeUser((user, cb) => {
+  cb(null, user);
+});
+
+passport.deserializeUser((obj, cb) => {
+  cb(null, obj);
+});
+
+/* * * * * * * * * * * * * * * * * * * * * * * * * * *
+  Express App Setup
+* * * * * * * * * * * * * * * * * * * * * * * * * * */
 
 app.use('/public', express.static('client/public'));
 app.use('/react', express.static('node_modules/react/dist'));
@@ -22,9 +51,16 @@ app.use('/react-dom', express.static('node_modules/react-dom/dist'));
 app.use('/jquery', express.static('node_modules/jquery/dist'));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(require('cookie-parser')());
+app.use(require('express-session')({ secret: 'keyboard cat', resave: true, saveUninitialized: true }));
+
+// Initialize Passport
+app.use(passport.initialize());
+app.use(passport.session());
+
+app.listen(process.env.PORT || 3000);
 
 console.log('server is running');
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
   API Routes
@@ -35,11 +71,17 @@ app.get('/', (req,res)=> {
 });
 app.get('/workout', getWorkout);
 app.get('/history', getHistory);
+app.get('/login/facebook',
+  passport.authenticate('facebook'));
+app.get('/login/facebook/return', 
+  passport.authenticate('facebook', { failureRedirect: '/' }),
+  (req, res) => {
+    res.redirect('/');
+  });
 
 app.post('/addWorkout', addWorkout);
 app.post('/login', checkLogin);
 app.post('/signup', addSignup);
-
 
 /* * * * * * * * * * * * * * * * * * * * * * * * * * *
   Request Handlers
@@ -176,5 +218,3 @@ function addSignup(req, res) {
     }
   });
 }
-
-

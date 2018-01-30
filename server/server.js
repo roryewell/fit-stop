@@ -29,7 +29,32 @@ passport.use(new Strategy({
   callbackURL: 'http://localhost:3000/login/facebook/return'
 },
 (accessToken, refreshToken, profile, cb) => {
-  console.log(accessToken, refreshToken, profile, cb);
+  console.log(profile);
+  console.log('inside strategy cb');
+  User.find({username: profile.displayName}, (err, user) => {
+    if (err) {
+      console.log("Database access error" + err);
+    } else {
+      if (!user[0]) {
+        var newUser = new User({
+          _id: new ObjectID(),
+          username: profile.displayName,
+          preferences: {}
+        });
+        newUser.save((err) => {
+          if (err) {
+            console.log(err);
+          } else {
+            // res.status(200).send('User Created');
+            console.log('User created');
+          }
+        });
+      } else {
+        console.log('User exists');
+        // res.status(400).send('User exsists');
+      }
+    }
+  });
   return cb(null, profile);
 }));
 
@@ -45,8 +70,8 @@ passport.deserializeUser((obj, cb) => {
   Express App Setup
 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
-app.all('/*', (req, res, next) => {
-  res.header('Access-Control-Allow-Origin', '*');
+app.all('/*', function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
   next();
 });
 
@@ -191,7 +216,6 @@ function checkLogin(req, res) {
     }
   });
 }
-
 
 function addSignup(req, res) {
   var name = req.body.username;

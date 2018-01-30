@@ -45,6 +45,11 @@ passport.deserializeUser((obj, cb) => {
   Express App Setup
 * * * * * * * * * * * * * * * * * * * * * * * * * * */
 
+app.all('/*', (req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  next();
+});
+
 app.use('/public', express.static('client/public'));
 app.use('/react', express.static('node_modules/react/dist'));
 app.use('/react-dom', express.static('node_modules/react-dom/dist'));

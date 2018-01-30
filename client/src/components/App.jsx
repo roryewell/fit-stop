@@ -192,16 +192,6 @@ class App extends React.Component {
     });
   }
 
-  facebookSignup(event) {
-    axios.get('/login/facebook')
-      .then((result) => {
-        console.log('woo', result);
-      })
-      .catch((err) => {
-        console.log('Facebook authentication error:', err);
-      });
-  }
-
   logOut() {
     this.setState({loggedIn: false});
     this.setState({username: null});
@@ -273,7 +263,7 @@ class App extends React.Component {
           return (<Login login={this.login} />);
       }
       if (this.state.currentState === 'SignUp') {
-          return (<SignUp signup={this.signup}  />);
+          return (<SignUp signup={this.signup} />);
       }
       if (this.state.currentState === 'Countdown') {
           return (<Countdown countdown={this.state.countdown} />);

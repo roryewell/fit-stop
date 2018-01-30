@@ -9,6 +9,7 @@ var SignUp = (props) => (
       <input type="submit" value="Sign Up"/>
     </form>
     <h2>or</h2>
+    <button><a href="/login/facebook">Sign up with Facebook</a></button>
   </div>
 );
 

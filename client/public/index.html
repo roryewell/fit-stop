@@ -37,14 +37,17 @@
       ipcRenderer.on('workout:start', () => {
         document.querySelector('.startButton img').click();
       });
+      
       ipcRenderer.on('workout:end', () => {
         // TODO: This isn't a very safe way to execute the "End" function. Need to be more specific
         // in next revision:
         document.querySelector('.blackButton').click();
       });
+      
       ipcRenderer.on('user:log-in', () => {
         // TODO: Need a way to specify "Log In" button.
       });
+      
       ipcRenderer.on('user:log-out', () => {
         // TODO: Need a way to specify "Log out" functionality.
       });

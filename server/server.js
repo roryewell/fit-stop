@@ -26,7 +26,7 @@ const app = express();
 passport.use(new Strategy({
   clientID: process.env.CLIENT_ID,
   clientSecret: process.env.CLIENT_SECRET,
-  callbackURL: 'http://localhost:3000/login/facebook/return'
+  callbackURL: 'https://fierce-bayou-35151.herokuapp.com/login/facebook/return'
 },
 (accessToken, refreshToken, profile, cb) => {
   process.nextTick(() => {

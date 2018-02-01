@@ -8,6 +8,7 @@ var Login = (props) => (
       <input id="password" type="password" name="password"/>
       <input type="submit" value="Log In"/>
     </form>
+    <br />
     <h1>or</h1>
     <button className="loginBtn loginBtn--facebook">Log in with Facebook</button>
   </div>

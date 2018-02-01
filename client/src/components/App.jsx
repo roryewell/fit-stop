@@ -134,7 +134,7 @@ class App extends React.Component {
         console.log('succesfully posted data!');
       }
     });
-  };
+  }
 
   login(event) {
     event.preventDefault();
@@ -162,6 +162,18 @@ class App extends React.Component {
         }
       }
     });
+  }
+
+  facebookLogin(event) {
+    event.preventDefault();
+
+    axios.post('/login')
+      .then((results) => {
+        console.log(results);
+      })
+      .catch((err) => {
+        console.log('Error attempting to log in to Facebook: ', err);
+      });
   }
 
   signup(event) {
@@ -260,7 +272,7 @@ class App extends React.Component {
         return (<Dashboard goToCountdown={this.goToCountdown} workoutHistory={this.state.workoutHistory} loggedIn={this.state.loggedIn} />);
       }
       if (this.state.currentState === 'Login') {
-          return (<Login login={this.login} />);
+          return (<Login login={this.login} facebookLogin={this.facebookLogin} />);
       }
       if (this.state.currentState === 'SignUp') {
           return (<SignUp signup={this.signup} />);
